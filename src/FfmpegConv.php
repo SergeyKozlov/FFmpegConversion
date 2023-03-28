@@ -11,6 +11,7 @@ namespace VideMe\Ffmpegconversion;
 
 putenv("PATH=/usr/bin");
 
+use FFMpeg;
 use FFMpeg\Coordinate\Dimension;
 use FFMpeg\Format\Video\X264;
 //use Emgag\Video\ThumbnailSprite\ThumbnailSprite;

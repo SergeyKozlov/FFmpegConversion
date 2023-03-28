@@ -10,7 +10,7 @@
  * http://www.opensource.org/licenses/MIT
  */
 
-namespace VideMe\Datacraft;
+namespace VideMe\Ffmpegconversion;
 require($_SERVER['DOCUMENT_ROOT'] . '/vendor/autoload.php');
 
 use VideMe\Datacraft\log\log;
@@ -1225,7 +1225,7 @@ class UploadHandler
         //header('Access-Control-Allow-Credentials: true');
         //include_once($_SERVER['DOCUMENT_ROOT'] . '/system/log/log.php');
         //include_once($_SERVER['DOCUMENT_ROOT'] . '/nad/index.php'); //<---
-        $log = new log();
+        $log = new LogConversion();
         $welcome = new NAD(); //<---
 //header('Access-Control-Allow-Origin: https://www.vide.me');
 //header('Access-Control-Allow-Credentials: true');
