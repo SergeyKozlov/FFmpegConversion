@@ -1,0 +1,20 @@
+{
+    "name": "vide.me/ffmpegconversion",
+    "description": "FFmpeg conversion",
+    "type": "library",
+    "require": {
+        "php-ffmpeg/php-ffmpeg": "v1.1.0",
+        "vide.me/datacraft": "dev-master"
+    },
+    "autoload": {
+        "psr-4": {
+            "VideMe\\Ffmpegconversion\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Sergey Kozlov",
+            "email": "hello@sergeykozlov.ru"
+        }
+    ]
+}
