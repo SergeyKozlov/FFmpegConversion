@@ -11,10 +11,11 @@
  */
 
 namespace VideMe\Ffmpegconversion;
-require($_SERVER['DOCUMENT_ROOT'] . '/vendor/autoload.php');
+//require($_SERVER['DOCUMENT_ROOT'] . '/vendor/autoload.php');
 
 use VideMe\Datacraft\log\log;
 use VideMe\Datacraft\nad;
+use VideMe\Ffmpegconversion\NADFFMpeg;
 
 //$tm = new log();
 //exit(' root nad start exit ');
@@ -61,7 +62,8 @@ class UploadHandler
         //error_reporting(0); // Turn off error reporting
         //error_reporting(E_ALL ^ E_DEPRECATED); // Report all errors
 
-        $welcome = new NAD();
+        //$welcome = new NAD();
+        $welcome = new NADFFMpeg();
 
         //header('Access-Control-Allow-Origin: https://www.vide.me');
         //header('Access-Control-Allow-Credentials: true');
@@ -73,7 +75,8 @@ class UploadHandler
             //'script_url' =>  $this->get_full_url() . "/", // <===
             //==='upload_dir' => dirname($this->get_server_var('SCRIPT_FILENAME')).'/files/',
             //'upload_dir' => dirname($this->get_server_var('SCRIPT_FILENAME')) . $welcome->nadtemp, // <===
-            'upload_dir' => $welcome->nadtemp, // <===
+            //'upload_dir' => $welcome->nadtemp, // <===
+            'upload_dir' => $welcome->getNadtemp(), // <===
             //'upload_dir' => dirname($this->get_server_var('SCRIPT_FILENAME')) . "/var/www/html/upload/files/", // <===
             //==='upload_url' => $this->get_full_url().'/files/',
             'upload_url' => $this->get_full_url().'/v?m=',
@@ -87,7 +90,8 @@ class UploadHandler
             'delete_type' => 'DELETE',
             //'access_control_allow_origin' => '*',
             //'access_control_allow_origin' => 'https://www.vide.me/web/upload/',
-            'access_control_allow_origin' => 'https://www.vide.me',
+            //'access_control_allow_origin' => 'https://www.vide.me',
+            'access_control_allow_origin' => '*',
 
             //'access_control_allow_credentials' => false,
             'access_control_allow_credentials' => true,
@@ -1226,7 +1230,7 @@ class UploadHandler
         //include_once($_SERVER['DOCUMENT_ROOT'] . '/system/log/log.php');
         //include_once($_SERVER['DOCUMENT_ROOT'] . '/nad/index.php'); //<---
         $log = new LogConversion();
-        $welcome = new NAD(); //<---
+        $welcome = new NADFFMpeg(); //<---
 //header('Access-Control-Allow-Origin: https://www.vide.me');
 //header('Access-Control-Allow-Credentials: true');
         //error_reporting(0); // Turn off error reporting
