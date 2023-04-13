@@ -2,7 +2,7 @@
 
 namespace VideMe\Ffmpegconversion;
 
-class NADFFMpeg extends \VideMe\Datacraft\NAD
+class NADFFMpeg extends \VideMe\Datacraft\nad
 {
     public $nadtemp;
     public function __construct(/*log $log*/)
@@ -91,5 +91,67 @@ class NADFFMpeg extends \VideMe\Datacraft\NAD
             $uploadDo['upload_type'] = $uploadSetParam['upload_type'];
         }
         return $uploadDo;
+    }
+    function get_m3u8_video_segment($url)
+    {
+        // https://s3.amazonaws.com/video.vide.me/ff407c4bf24c.m3u8
+        $path_parts = pathinfo($url);
+        $fullFileName = $this->nadtemp . $path_parts['filename'] . ".m3u8";
+        try {
+            $m3u8 = @file_get_contents($fullFileName);
+        } catch (Exception $e) {
+            echo "\n\rget_m3u8_video_segment file_get_contents error: " . $e . "\n\r";
+            //exit;
+            return false;
+        }
+        if (strlen($m3u8) > 3) {
+            $tmp = strrpos($fullFileName, '/');
+            if ($tmp !== false) {
+                //$base_url = substr($url, 0, $tmp + 1);
+                //if (is_good_url($base_url)) {
+                $array = preg_split('/\s*\R\s*/m', trim($m3u8), NULL, PREG_SPLIT_NO_EMPTY);
+                $url2 = array();
+                foreach ($array as $line) {
+                    $line = trim($line);
+                    if (strlen($line) > 2) {
+                        if ($line[0] != '#') {
+                            //if (is_good_url($line)) {
+                            $url2[] = $line;
+                            /*} else {
+                                $url2[] = $base_url . $line;
+                            }*/
+                        }
+                    }
+                }
+                return $url2;
+                //}
+            }
+        }
+        return false;
+    }
+    public function ConvParseData($ConvParseData)
+    {
+        // TODO:  Похоже тут не работает
+        if (is_object($ConvParseData)) {
+            foreach (get_object_vars($ConvParseData) as $key => $val) {
+                if (is_object($val) || is_array($val)) {
+                    $ret[$key] = $this->ConvParseData($val);
+                } else {
+                    $ret[$key] = $val;
+                }
+            }
+            return $ret;
+        } elseif (is_array($ConvParseData)) {
+            foreach ($ConvParseData as $key => $val) {
+                if (is_object($val) || is_array($val)) {
+                    $ret[$key] = $this->ConvParseData($val);
+                } else {
+                    $ret[$key] = $val;
+                }
+            }
+            return $ret;
+        } else {
+            return $ConvParseData;
+        }
     }
 }

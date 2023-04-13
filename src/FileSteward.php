@@ -17,6 +17,7 @@ use VideMe\Datacraft\nad;
 //use VideMe\Ffmpegconversion\LogConversion;
 use VideMe\Ffmpegconversion\LogConversion;
 use VideMe\Ffmpegconversion\FfmpegConv;
+use VideMe\Ffmpegconversion\S3Ffmpeg;
 
 
 //error_reporting(0); // Turn off error reporting
@@ -26,10 +27,10 @@ class FileSteward
 {
     public function __construct()
     {
-        $this->welcome = new NAD();
+        $this->welcome = new NADFFMpeg();
         $this->log = new LogConversion();
         $this->ffmpegConv = new FfmpegConv();
-        //$this->s3 = new S3();
+        $this->s3 = new S3Ffmpeg();
         //$this->sendmail = new sendmail();
     }
 
@@ -184,7 +185,7 @@ class FileSteward
                 "file" => $fullNewFilename,
                 "name" => $val
             ]);
-            $this->uploadToEmergencyServer(['file' => $fullNewFilename, 'origin' => 'video']);
+            //$this->uploadToEmergencyServer(['file' => $fullNewFilename, 'origin' => 'video']);
         }
 
         $resJpgToS3 = $this->s3->uploadImage([ // TODO: Remove
@@ -192,7 +193,7 @@ class FileSteward
             /*"name" => $path_parts['filename']*/
         ]);
         $this->log->toFile(['service' => 'file', 'type' => '', 'text' => 'fileToS3 return ' . $fileToS3['task_item_id']]);
-        $this->uploadToEmergencyServer(['file' => $this->welcome->nadtemp . $fileToS3['task_item_id'] . '.jpg', 'origin' => 'img']);
+       // $this->uploadToEmergencyServer(['file' => $this->welcome->nadtemp . $fileToS3['task_item_id'] . '.jpg', 'origin' => 'img']);
 
         return $resMp4ToS3;
     }
