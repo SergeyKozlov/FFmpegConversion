@@ -14,6 +14,7 @@ use log;
 //use sendmail;
 
 use VideMe\Datacraft\nad;
+use VideMe\Datacraft\RedisVideme;
 //use VideMe\Ffmpegconversion\LogConversion;
 use VideMe\Ffmpegconversion\LogConversion;
 use VideMe\Ffmpegconversion\FfmpegConv;
@@ -660,4 +661,81 @@ class FileSteward
             return false;
         }
     }
+
+    public function RedisAddArray($RedisAddArray)
+    {
+        $getRredis = new RedisVideme();
+        $redis = $getRredis->redisConnect();
+        //$redis->set($RedisAddArray['key'], $RedisAddArray["value"]);
+        //$redis->set('pop_items', json_encode([$resTrendsTags[0]['tag'] => $res0, $resTrendsTags[1]['tag'] => $res1, $resTrendsTags[2]['tag'] => $res2]));
+        echo "\r\nRedisAddArray RedisAddArray\r\n";
+        print_r($RedisAddArray);
+        $res = $redis->get($RedisAddArray["key"]);
+        echo "\r\nRedisAddArray res\r\n";
+        print_r($res);
+        if (!empty($res)) {
+            echo "\r\nRedisAddArray no empty\r\n";
+            if (is_array($res)) {
+                echo "\r\nRedisAddArray res array\r\n";
+            } else {
+                echo "\r\nRedisAddArray res no array\r\n";
+            }
+            //$res2 = json_decode($res);
+            //$res2 = json_decode($res, true);
+            $res2 = json_decode($res);
+            echo "\r\nRedisAddArray res2\r\n";
+            print_r($res2);
+            if (!is_array($res2)) {
+                echo "\r\nRedisAddArray res2 no array\r\n";
+                //$redis->set($RedisAddArray['key'], json_encode(array_merge(json_decode($res), $RedisAddArray["value"])));
+                //$res3 = $res2[] = $RedisAddArray["value"];
+                //$res3 = $res2[] = json_decode($RedisAddArray["value"]);
+                //$res3 = json_encode($RedisAddArray["value"]);
+                /*$res3 = json_encode($RedisAddArray["value"], true); // no
+                echo "\r\nRedisAddArray res3\r\n";
+                print_r($res3);*/
+                //$res7 = $res2[] = $res3;
+                //$res7 = $res[] = $res3;
+                $res8 = [];
+                //$res8[] = $res3;
+                $res8[] = $res2;
+                //$res8[] = $res3;
+                $res8[] = $RedisAddArray["value"];
+                echo "\r\nRedisAddArray res8\r\n";
+                print_r($res8);
+                $redis->set($RedisAddArray['key'], json_encode($res8));
+            } else {
+                echo "\r\nRedisAddArray res2 array\r\n";
+                $res2[] = $RedisAddArray["value"];
+                echo "\r\nRedisAddArray res2\r\n";
+                print_r($res2);
+                //$res8 = $res2;
+                $redis->set($RedisAddArray['key'], json_encode($res2));
+            }
+            //$res9 = array_merge($res2, $res3);
+            /*$res9 = array_merge($res2, $res8);
+            echo "\r\nRedisAddArray res9\r\n";
+            print_r($res9);*/
+            //$redis->set($RedisAddArray['key'], json_encode($res2[] = $RedisAddArray["value"]));
+            //$redis->set($RedisAddArray['key'], json_encode($res8));
+            //$redis->set($RedisAddArray['key'], json_encode($res9));
+        } else {
+            $res5 = [];
+            echo "\r\nRedisAddArray empty\r\n";
+            //$res4 = json_encode($RedisAddArray["value"], true);
+            //$res4 = json_encode($RedisAddArray["value"]);
+            /*$res4 = $RedisAddArray["value"];
+            echo "\r\nRedisAddArray res4\r\n";
+            print_r($res4);*/
+            //$res5[] = $res4;
+            $res5[] = $RedisAddArray["value"];
+            echo "\r\nRedisAddArray res5\r\n";
+            print_r($res5);
+            //$redis->set($RedisAddArray['key'], json_encode($RedisAddArray["value"]));
+            $res = [];
+            $redis->set($RedisAddArray['key'], json_encode($res[] = $RedisAddArray["value"]));
+        }
+        $redis->expire($RedisAddArray['key'], 60 * 60 * 24 * 14);
+    }
+
 }
