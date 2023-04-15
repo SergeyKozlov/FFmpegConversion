@@ -422,9 +422,9 @@ class LogConversion extends \VideMe\Datacraft\log\log
                     /* Change task ********************************   */
                     //$this->taskChangeStatus($lastTask, "fileSendToS3");
                     /* set new task ******************************** convert to fileCreate_pre_video_image_sprite*/
-                    $this->toFile(['service' => 'file', 'type' => '', 'text' => 'fileUploadVideoMP4_240 pgSetTask fileCreate_pre_video_image_sprite ' . $lastTask['task_item_id']]);
+//                    $this->toFile(['service' => 'file', 'type' => '', 'text' => 'fileUploadVideoMP4_240 pgSetTask fileCreate_pre_video_image_sprite ' . $lastTask['task_item_id']]);
 
-                    $this->pgSetTask([
+/*                    $this->pgSetTask([
                         "task_type" => "fileCreate_pre_video_image_sprite",
                         "task_status" => "awaiting",
                         //"file_size_start" => $file->size,
@@ -443,7 +443,7 @@ class LogConversion extends \VideMe\Datacraft\log\log
                         //'album_id' => $lastTask['album_id'],
                         //'owner_id' => $lastTask['owner_id'],
                         //$welcome->videoDuration => ""
-                    ]);
+                    ]);*/
 
                     /* ****************************************** */
                 } else {
@@ -496,66 +496,8 @@ class LogConversion extends \VideMe\Datacraft\log\log
                     // TODO: Поставить проверку выпонения
                     echo "\n\rpgSchedulerWork resFileAdd\n\r";
                     print_r($resFileAdd);
+                    $this->taskChangeStatus($lastTask, "success");
 
-                    $itemInfo = $welcome->pgItemFullInfo($dataItems['item_id']);
-                    echo "\n\rv itemInfo\n\r";
-                    print_r($itemInfo);
-                    if (!empty($itemInfo['owner_id'])) {
-
-                        if (!empty($lastTask['album_id']) or $lastTask['access'] !== 'private') {
-                            /*if (!empty($lastTask['album_id'])
-                                or $lastTask['access'] !== 'private'
-                                or $lastTask['status'] == 'published') {*/
-                            if ($lastTask['status'] == 'published') {
-                                //if ($lastTask['access'] == 'public') {
-                                // Если нужно разместить файл в посте
-                                $dataPosts['item_id'] = $dataItems['item_id'];
-                                $dataPosts['post_owner_id'] = $lastTask['owner_id'];
-                                $dataPosts['type'] = 'update';
-                                //$dataPosts['album_id'] = $lastTask['album_id'];
-                                //$dataPosts['tags'] = $lastTask['tags'];
-                                $resMessageAdd = $welcome->addToPosts($dataPosts);
-                                //$cf = new ContentFilter();
-                                //$cf->compositionNewPosts_auto();
-                                //}
-                            }
-                            if ($lastTask['access'] == 'friends') {
-                                $welcome->pgSetAccessFriends($dataItems);
-                            }
-                            //==================
-                            if (!empty($lastTask['album_id']) and
-                                $lastTask['album_id'] !== 'public' and
-                                $lastTask['album_id'] !== 'friends' and
-                                $lastTask['album_id'] !== 'private') {
-
-                                //$dataAlbumsSets['album_id'] = $lastTask['album_id'];
-                                //$dataAlbumsSets['owner_id'] = $lastTask['owner_id'];
-                                $lastTask['item_id'] = $dataItems['item_id'];
-                                $resAlbum = $welcome->addToAlbumsSets($lastTask);
-                                echo "\nadd to album res \n";
-                                print_r($resAlbum);
-                            }
-                            // TODO: Поставить проверку выпонения
-                            $this->taskChangeStatus($lastTask, "success");
-                            $this->toFile(['service' => 'file', 'type' => '', 'text' => 'fileSendToS3 taskChangeStatus success ' . $lastTask['task_item_id']]);
-
-                        }
-
-
-                        $userInfo = $welcome->pgUserInfo($lastTask['owner_id']);
-                        //echo "\n\rpgSchedulerWork userInfo\n\r";
-                        //print_r($userInfo);
-                        /* sendmail ********************************   */
-
-                        $this->toFile(['service' => 'file', 'type' => '', 'text' => 'fileSendToS3 SendItemReady ' . $lastTask['task_item_id']]);
-
-                        $fs->fileRemove($lastTask); // TODO: remove
-
-                    } else {
-                        $this->taskChangeStatus($lastTask, "error");
-
-                        exit();
-                    }
                 } else {
                     // Convert failure
                     echo "\npgSchedulerWork fileSendToS3 failure\n\r";
@@ -884,5 +826,21 @@ class LogConversion extends \VideMe\Datacraft\log\log
         $this->log->toFile(['service' => 'file', 'type' => '', 'text' => 'fileToHls return ' . $lastTask["file"]]);
         return $u;
     }
-
+    public function pgGetMyTask($pgGetMyTask)
+    {
+        if (!empty($pgGetMyTask['user_id'])) {
+            $pg = new PsqlFfmpeg();
+            /*return $pg->pgDataByColumn([
+                'table' => $pg->table_tasks,
+                'find_column' => 'owner_id',
+                'find_value' => $pgGetMyTask['user_id']]);*/
+            return $pg->pgGetMyTasks($pgGetMyTask);
+            /*$task = $pg->pgGetMyTasks($pgGetMyTask);
+            $task['percent'] = file_get_contents($task['task_item_id'] . '.txt');
+            return $task;*/
+        } else {
+            //header('Location: https://vide.me/VictorLustig.html');
+            return false;
+        }
+    }
 }

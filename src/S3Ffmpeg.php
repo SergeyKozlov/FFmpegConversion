@@ -6,10 +6,12 @@ class S3Ffmpeg
 {
     public function uploadFile($uploadFile)
     {
-        $welcome = new NADFFMpeg();
+        //$welcome = new NADFFMpeg();
 
         $fileInfo = pathinfo($uploadFile['name']);
         echo "\n\rS3 uploadFile \n\r";
+        print_r($uploadFile);
+        echo "\n\rS3 fileInfo \n\r";
         print_r($fileInfo);
         $ContentType = '';
         if ($fileInfo['extension'] == 'ts') $ContentType = 'video/mp4';
@@ -33,7 +35,7 @@ class S3Ffmpeg
             /*copy($welcome->nadtemp . 'pre-image-w320/'  . $frae_name . '.jpg',
                 //copy('/var/www/videme_nfs/pre-image-w320/'  . $frae_name . '.jpg',
                 $_SERVER['DOCUMENT_ROOT'] . '/pre-image-w320/'  . $frae_name . '.jpg');*/
-            copy($uploadFile['file'], $_SERVER['DOCUMENT_ROOT'] . '/media/'  . $uploadFile['file']);
+            copy($uploadFile['file'], $_SERVER['DOCUMENT_ROOT'] . '/../media/'  . $uploadFile['name']);
         } catch (Exception $e) {
             echo "\n\ruploadFile this->s3->putObject: " . $e . "\n\r";
             //$sendmail = new sendmail();
@@ -42,5 +44,26 @@ class S3Ffmpeg
             //return false;
         }
         return $fileInfo;
+    }
+    public function uploadImage($uploadImage)
+    {   // https://www.w3.org/Graphics/JPEG/
+        //echo "\n\rs3 uploadImage uploadImage:\n\r";
+        //print_r($uploadImage);
+        //$bucket = 'img.vide.me';
+        /*$result = $this->s3->putObject([
+            'Bucket'       => $this->bucket_img_vide_me,
+            'Key'          => $uploadImage['file'],
+            'SourceFile'   => $this->welcome->nadtemp . $uploadImage['file'],
+            'ContentType'  => 'image/jpeg',
+            'ACL'          => 'public-read',
+            //'StorageClass' => 'REDUCED_REDUNDANCY',
+            'Metadata'     => [
+                'param1' => 'Source',
+                'param2' => 'www.vide.me'
+            ]]);*/
+        $welcome = new NADFFMpeg();
+
+        copy($welcome->getNadtemp() . $uploadImage['file'], $_SERVER['DOCUMENT_ROOT'] . '/../media/'  . $uploadImage['file']);
+        return $uploadImage['file'];
     }
 }

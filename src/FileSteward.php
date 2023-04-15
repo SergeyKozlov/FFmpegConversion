@@ -59,7 +59,7 @@ class FileSteward
         foreach ($u as $key => $val) {
             //echo "\n\r foreach $key: \n\r";
             //echo "\n\r foreach $val: \n\r";
-            $fullNewFilename = $this->welcome->nadtemp . $val;
+            $fullNewFilename = $this->welcome->getNadtemp() . $val;
             $resMp4ToS3 = $this->s3->uploadFile([
                 "file" => $fullNewFilename,
                 "name" => $val
@@ -181,7 +181,7 @@ class FileSteward
         foreach ($dataArray as $key => $val) {
             //echo "\n\r foreach $key: \n\r";
             //echo "\n\r foreach $val: \n\r";
-            $fullNewFilename = $this->welcome->nadtemp . $val;
+            $fullNewFilename = $this->welcome->getNadtemp() . $val;
             $resMp4ToS3 = $this->s3->uploadFile([
                 "file" => $fullNewFilename,
                 "name" => $val
@@ -269,12 +269,12 @@ class FileSteward
         foreach ($dataArray as $key => $val) {
             //echo "\n\r foreach $key: \n\r";
             //echo "\n\r foreach $val: \n\r";
-            $fullNewFilename = $this->welcome->nadtemp . $val;
+            $fullNewFilename = $this->welcome->getNadtemp() . $val;
             $resMp4ToS3 = $this->s3->uploadFile([
                 "file" => $fullNewFilename,
                 "name" => $val
             ]);
-            $this->uploadToEmergencyServer(['file' => $fullNewFilename, 'origin' => 'video']);
+            //$this->uploadToEmergencyServer(['file' => $fullNewFilename, 'origin' => 'video']);
         }
         $this->log->toFile(['service' => 'file', 'type' => '', 'text' => 'fileToS3NoJPG return ' . $fileToS3NoJPG['task_item_id']]);
         return $resMp4ToS3;
