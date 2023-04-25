@@ -595,4 +595,68 @@ class FfmpegConv
         $this->log->toFile(['service' => 'file', 'type' => '', 'text' => 'fileToMP4 return ' . $fileToMP4]);
 
     }
+    public function fileToMP4_Only($fileToMP4_Only)
+    {
+        $this->log->toFile(['service' => 'file', 'type' => '', 'text' => 'fileToMP4_Only start ' . $fileToMP4_Only]);
+
+        echo "\n\rfileToMP4 fileToMP4\n";
+        print_r($fileToMP4_Only);
+        //exit;
+        $path_parts = pathinfo($fileToMP4_Only);
+        //exit;
+        try {
+            $video = $this->ffmpeg->open($fileToMP4_Only);
+        } catch (Exception $e) {
+            echo "\n\r======================================================\n\r";
+            echo "\n\rfileToMP4 ffmpeg->open error: " . $e . "\n\r";
+            echo "\n\r======================================================\n\r";
+            //$sendmail = new sendmail();
+            //$sendmail->SendStaffAlert(['message' => $e]);
+            exit;
+            //return false;
+        }
+        //$format = new FFMpeg\Format\Video\X264('libmp3lame', 'libx264');
+        //-$format = new FFMpeg\Format\Video\X264('libfdk_aac', 'libx264');
+        try {
+            $format = new FFMpeg\Format\Video\X264('aac', 'libx264');
+            //$format = new FFMpeg\Format\Video\X264();
+            //$format->setAdditionalParameters(['-hls_list_size', '0']);
+            $format->setAdditionalParameters(['-movflags', '+faststart']); // 19072019 https://superuser.com/questions/802132/how-to-place-metadata-at-beginning-of-mp4-video-using-ffmpeg
+
+            $format
+                //->setKiloBitrate($param['BANDWIDTH'])/*->setAudioChannels(2)
+                //->setAudioKiloBitrate(256)
+            ;
+
+            $video
+                ->filters()
+                //->resize(new FFMpeg\Coordinate\Dimension($param['RESOLUTION_X'], $param['RESOLUTION_Y']))
+                ->synchronize();
+
+            /*$video
+                ->frame(FFMpeg\Coordinate\TimeCode::fromSeconds(3))
+                ->save($this->welcome->nadtemp . $path_parts['filename'] . '.jpg');*/
+
+            /*$video
+                ->frame(FFMpeg\Coordinate\TimeCode::fromSeconds(10))
+                ->save('frame.jpg');*/
+            /*$video
+                ->save(new FFMpeg\Format\Video\X264(), 'export-x264.mp4')
+                ->save(new FFMpeg\Format\Video\WMV(), 'export-wmv.wmv')
+                ->save(new FFMpeg\Format\Video\WebM(), 'export-webm.webm');*/
+            $video
+                //->save($format, $this->welcome->nadtemp . $path_parts['filename'] . '-' . $param['RESOLUTION_Y'] . '.mp4');
+                //->save($format, $this->welcome->nadtemp . $path_parts['filename'] . '_force.mp4');
+                ->save($format, $this->welcome->nadtemp . $path_parts['filename'] . '.mp4');
+            //->save($format, $this->welcome->nadtemp . $path_parts['filename'] . '-' . $param['RESOLUTION_Y'] . '.' . $path_parts['extension']);
+        } catch (Exception $e) {
+            echo "\n\r======================================================\n\r";
+            echo "\n\rfileToHlsAny ffmpeg->save error: " . $e . "\n\r";
+            echo "\n\r======================================================\n\r";
+            exit;
+            //return false;
+        }
+        $this->log->toFile(['service' => 'file', 'type' => '', 'text' => 'fileToMP4_Only return ' . $fileToMP4_Only]);
+
+    }
 }
